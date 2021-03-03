@@ -114,6 +114,7 @@ public class Frame extends JFrame implements MouseListener, MouseMotionListener 
 
         ///////////////////////////////////////////////////////////////////
         for (int i = 0; i < players.size(); i = i + 1){
+            int dx = 0;
             for (int j = 0; j < players.get(i).buns.size(); j = j + 1){
                 Card t = new Card("Original", "Buns", players.get(i).buns.get(j));
                 t.x = 600 + j * 30;
@@ -121,11 +122,11 @@ public class Frame extends JFrame implements MouseListener, MouseMotionListener 
                 t.faseUpIsTrue = 1;
                  System.out.println("hi "+t.numberOfCard+ " "+ t.deck+ " "+ t.gameset+" "+t.x + " "+ t.y );
                 t.drawCard(g2d);
-
+                dx = j;
             }
-            for (int j = players.get(i).buns.size(); j < players.get(i).buns.size() + players.get(i).doors.size(); j = j + 1){
+            for (int j = 0; j < players.get(i).doors.size(); j = j + 1){
                 Card t = new Card("Original", "Doors", players.get(i).doors.get(j));
-                t.x = 600 + j * 30;
+                t.x = 600 + j * 30 + dx * 30;
                 t.y = 100 + i * 100;
                 t.faseUpIsTrue = 1;
                 t.drawCard(g2d);
