@@ -109,7 +109,6 @@ public class Client extends MessageListener {
 
             while (numberOfPlayer > frame.players.size()-1) {
                 frame.newPlayer(frame.postman);
-                System.out.println("Ну на конец-то");
             }
 
             if (token0.equals("Buns")) {
@@ -123,7 +122,7 @@ public class Client extends MessageListener {
 
                 for (int i = 0; i < kol; i = i + 1) {
                     String n = tokenizer.nextToken();
-                    frame.player.buns.add(n);
+                    frame.players.get(numberOfPlayer).buns.add(n);
                 }
             }
 
@@ -136,7 +135,7 @@ public class Client extends MessageListener {
                 frame.players.get(numberOfPlayer).doors.clear();
                 for (int i = 0; i < kol; i = i + 1) {
                     String n = tokenizer.nextToken();
-                    frame.player.doors.add(n);
+                    frame.players.get(numberOfPlayer).doors.add(n);
                 }
             }
         }

@@ -53,9 +53,11 @@ public class Painter {
                     int i = Integer.parseInt(numberOfCard);
                     BufferedImage test = Buns.get(i);
                     g2d.drawImage(test, x0, y0, null);
+                    System.out.print("hello draw ");
                 }else{
                     BufferedImage test = Buns.get(0);
                     g2d.drawImage(test, x0, y0, null);
+
                 }
 
             }

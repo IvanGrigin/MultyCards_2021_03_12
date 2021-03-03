@@ -115,17 +115,18 @@ public class Frame extends JFrame implements MouseListener, MouseMotionListener 
         ///////////////////////////////////////////////////////////////////
         for (int i = 0; i < players.size(); i = i + 1){
             for (int j = 0; j < players.get(i).buns.size(); j = j + 1){
-                Card t = new Card("Origin", "Buns", players.get(i).buns.get(j));
-                t.x = 100 + j * 30;
-                t.y = 200 + i * 100;
+                Card t = new Card("Original", "Buns", players.get(i).buns.get(j));
+                t.x = 600 + j * 30;
+                t.y = 100 + i * 100;
                 t.faseUpIsTrue = 1;
+                 System.out.println("hi "+t.numberOfCard+ " "+ t.deck+ " "+ t.gameset+" "+t.x + " "+ t.y );
                 t.drawCard(g2d);
-                System.out.println("hi");
+
             }
             for (int j = players.get(i).buns.size(); j < players.get(i).buns.size() + players.get(i).doors.size(); j = j + 1){
-                Card t = new Card("Origin", "Doors", players.get(i).doors.get(j));
-                t.x = 100 + j * 30;
-                t.y = 200 + i * 100;
+                Card t = new Card("Original", "Doors", players.get(i).doors.get(j));
+                t.x = 600 + j * 30;
+                t.y = 100 + i * 100;
                 t.faseUpIsTrue = 1;
                 t.drawCard(g2d);
             }
@@ -309,8 +310,8 @@ public class Frame extends JFrame implements MouseListener, MouseMotionListener 
                 }
             }
         }
-        sentStates();
         repaint();
+        sentStates();
     }
 
     @Override
@@ -361,7 +362,7 @@ public class Frame extends JFrame implements MouseListener, MouseMotionListener 
     }
     public void sentStates(){
         // Отсылает карты игрока в светло-серой зоне
-        player.sentStateOfPlayer();
+       player.sentStateOfPlayer();
     }
 
     public void upTime() {

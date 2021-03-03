@@ -48,7 +48,6 @@ public class Card {
             p.draw(g2d, x, y, gameset, deck, "00");
         }else {
             p.draw(g2d, x, y, gameset, deck, numberOfCard);
-
         }
     }
 
