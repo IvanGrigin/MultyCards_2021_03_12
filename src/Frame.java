@@ -22,6 +22,8 @@ public class Frame extends JFrame implements MouseListener, MouseMotionListener 
     ArrayList<Player> players = new ArrayList<>();
 
     Player player;
+    Cube cubic;
+
     int maxHigth = 0;
     int activeCard = -1;
     int maxHeigthOfThisCards;
@@ -79,7 +81,6 @@ public class Frame extends JFrame implements MouseListener, MouseMotionListener 
             }
         }
 
-
         g.setColor(Color.lightGray);
         g.fillRect(0, getHeight() - darkGrayZone - lightGrayZone, getWidth(), lightGrayZone);
         for (int i = 0; i <= maxHigth; i = i + 1) {
@@ -90,18 +91,18 @@ public class Frame extends JFrame implements MouseListener, MouseMotionListener 
             }
         }
 
-
         Color c = new Color(245, 245, 220);
         g.setColor(c);
         g.fillRect(0, 0, getWidth(), getHeight() - darkGrayZone - lightGrayZone);
-
 
         //Отрисовка статичных элементов
         deckOfDoors.drawDeck(g2d);
         deckOfBuns.drawDeck(g2d);
         deckOfBin.drawDeck(g2d);
-
-        //Отрисовка карт
+        if(cubic != null) {
+            cubic.drawCube(g2d);
+        }
+        //Отрисовка карт всех остальных
         for (int i = 0; i <= maxHigth; i = i + 1) {
             for (int j = 0; j < cards.size(); j = j + 1) {
                 if ((cards.get(j).higth == i) && (!cards.get(j).isInDarkGrayZone(getHeight() - darkGrayZone)) && (!cards.get(j).isInLightGrayZone(getHeight() - darkGrayZone - lightGrayZone, getHeight() - darkGrayZone))) {
@@ -110,9 +111,8 @@ public class Frame extends JFrame implements MouseListener, MouseMotionListener 
             }
         }
 
-
-
         ///////////////////////////////////////////////////////////////////
+        // Происходит отрисовка "рук" всех игроком, шмотки плюшки и т.п.
         for (int i = 0; i < players.size(); i = i + 1){
             int dx = 0;
             for (int j = 0; j < players.get(i).buns.size(); j = j + 1){
@@ -121,7 +121,7 @@ public class Frame extends JFrame implements MouseListener, MouseMotionListener 
                 t.y = 100 + i * 100;
                 t.faseUpIsTrue = 1;
                 t.drawCard(g2d);
-                dx = j;
+                dx = j + 1;
             }
             for (int j = 0; j < players.get(i).doors.size(); j = j + 1){
                 Card t = new Card("Original", "Doors", players.get(i).doors.get(j));
@@ -132,7 +132,6 @@ public class Frame extends JFrame implements MouseListener, MouseMotionListener 
             }
         }
 
-
         g.dispose();
         bufferStrategy.show();
     }
@@ -140,7 +139,6 @@ public class Frame extends JFrame implements MouseListener, MouseMotionListener 
 
     @Override
     public void mouseClicked(MouseEvent e) {
-
 
         // Здесь идет проверка на попадание клика на карту и соответсвенно она переворачивается
         maxHeigthOfThisCards = -1;
@@ -161,6 +159,8 @@ public class Frame extends JFrame implements MouseListener, MouseMotionListener 
             new Thread(() -> {
                 new MakeSound().playSound("C://Users//forStudy//IdeaProjects//data//Munchkin_Sounds//flip.wav");
             }).start();
+        }else{
+            cubic.checkClick(e);
         }
         repaint();
     }
@@ -168,6 +168,7 @@ public class Frame extends JFrame implements MouseListener, MouseMotionListener 
 
     @Override
     public void mousePressed(MouseEvent e) {
+
         // Аналогичная проверка на попадание клика
         maxHeigthOfThisCards = -1;
         for (int i = 0; i < cards.size(); i = i + 1) {
@@ -332,6 +333,11 @@ public class Frame extends JFrame implements MouseListener, MouseMotionListener 
     public void setPostman(StreamWorker p) {
         // Добавляет почтальона
         postman = p;
+    }
+
+    public void setCube(StreamWorker p) {
+        // Добавляет кубик
+        cubic = new Cube(10,40, p, numberOfClient);
     }
 
     public void setPlayer(StreamWorker p){

@@ -21,14 +21,17 @@ public class Client extends MessageListener {
     public void start() throws IOException {
 
         String host = "127.0.0.1";
-        int port = 2391;
+        int port = 2491;
         Socket socket = new Socket(host, port);
 
         StreamWorker postman = new StreamWorker(socket.getInputStream(), socket.getOutputStream());
         postman.addListener(this);
         postman.start();
+
+
         frame.setPostman(postman);
         frame.setPlayer(postman);
+        frame.setCube(postman);
     }
 
     @Override
@@ -110,32 +113,37 @@ public class Client extends MessageListener {
                 frame.newPlayer(frame.postman);
             }
 
-            if (token0.equals("Buns")) {
-                int kol;
-                String kol_vo = tokenizer.nextToken();
-                kol = Integer.parseInt(kol_vo);
 
-                for(int i = 0; i < frame.players.get(numberOfPlayer).buns.size(); i = i + 1) {
-                    frame.players.get(numberOfPlayer).buns.remove(i);
+            if (token0.equals("Buns")) {
+                {
+                    int kol;
+                    String kol_vo = tokenizer.nextToken();
+                    kol = Integer.parseInt(kol_vo);
+
+                    frame.players.get(numberOfPlayer).buns.clear();
+                    for (int i = 0; i < kol; i = i + 1) {
+                        String n = tokenizer.nextToken();
+                        frame.players.get(numberOfPlayer).buns.add(n);
+                    }
                 }
 
-                for (int i = 0; i < kol; i = i + 1) {
-                    String n = tokenizer.nextToken();
-                    frame.players.get(numberOfPlayer).buns.add(n);
+
+                String token1 = tokenizer.nextToken();
+                if (token1.equals("Doors")) {
+                    int kol;
+                    String kol_vo = tokenizer.nextToken();
+                    kol = Integer.parseInt(kol_vo);
+
+                    frame.players.get(numberOfPlayer).doors.clear();
+                    for (int i = 0; i < kol; i = i + 1) {
+                        String n = tokenizer.nextToken();
+                        frame.players.get(numberOfPlayer).doors.add(n);
+                    }
                 }
             }
-
-            String token1 = tokenizer.nextToken();
-            if (token1.equals("Doors")) {
-                int kol;
-                String kol_vo = tokenizer.nextToken();
-                kol = Integer.parseInt(kol_vo);
-
-                frame.players.get(numberOfPlayer).doors.clear();
-                for (int i = 0; i < kol; i = i + 1) {
-                    String n = tokenizer.nextToken();
-                    frame.players.get(numberOfPlayer).doors.add(n);
-                }
+            if(token0.equals("Cube")){
+                String numberOfFace = tokenizer.nextToken();
+                frame.cubic.numberOfFace = numberOfFace;
             }
         }
         frame.repaint();

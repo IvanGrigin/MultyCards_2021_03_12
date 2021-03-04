@@ -10,7 +10,7 @@ public class Server extends MessageListener {
 
 
     public void run() throws IOException {
-        ServerSocket server = new ServerSocket(2391);
+        ServerSocket server = new ServerSocket(2491);
 
         while (true) {
             Socket client = server.accept();
@@ -90,6 +90,9 @@ public class Server extends MessageListener {
             textsOfServer.add(s);
 
             postmans.get(numberOfClient).sendMessage(text);
+        }else if (token0.equals("newRole")){
+            int w = (int) (Math.random() * 6);
+            text = "State -1 Cube " + w;
         }
 
         if (forWho.equals("All")) {
@@ -107,7 +110,6 @@ public class Server extends MessageListener {
                 postman1.sendMessage(text);
             }
         }
-
 
         System.out.println(text);
     }

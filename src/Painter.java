@@ -42,13 +42,23 @@ public class Painter {
             Doors.add(ImageIO.read(new File("C:\\Users\\forStudy\\IdeaProjects\\data\\Munchkin_Cards\\" + gameset + "\\" + "Doors" + "\\" + "10.bmp")));
         } catch (IOException e) {
             e.printStackTrace();
-
+        }
+        try {
+            Cube.add(ImageIO.read(new File("C:\\Users\\forStudy\\IdeaProjects\\data\\Munchkin_Cards\\" + gameset + "\\" + "All_another" + "\\" + "Cube_1.bmp")));
+            Cube.add(ImageIO.read(new File("C:\\Users\\forStudy\\IdeaProjects\\data\\Munchkin_Cards\\" + gameset + "\\" + "All_another" + "\\" + "Cube_2.bmp")));
+            Cube.add(ImageIO.read(new File("C:\\Users\\forStudy\\IdeaProjects\\data\\Munchkin_Cards\\" + gameset + "\\" + "All_another" + "\\" + "Cube_3.bmp")));
+            Cube.add(ImageIO.read(new File("C:\\Users\\forStudy\\IdeaProjects\\data\\Munchkin_Cards\\" + gameset + "\\" + "All_another" + "\\" + "Cube_4.bmp")));
+            Cube.add(ImageIO.read(new File("C:\\Users\\forStudy\\IdeaProjects\\data\\Munchkin_Cards\\" + gameset + "\\" + "All_another" + "\\" + "Cube_5.bmp")));
+            Cube.add(ImageIO.read(new File("C:\\Users\\forStudy\\IdeaProjects\\data\\Munchkin_Cards\\" + gameset + "\\" + "All_another" + "\\" + "Cube_6.bmp")));
+        } catch (IOException e){
+            e.printStackTrace();
         }
     }
 
     public void draw(Graphics2D g2d, int x0, int y0, String gameset0, String deck, String numberOfCard) {
         if (gameset0.equals("Original")) {
             if (deck.equals("Buns")) {
+                // Отрисовывает карты сокровищ
                 if(!numberOfCard.equals("??")) {
                     int i = Integer.parseInt(numberOfCard);
                     BufferedImage test = Buns.get(i);
@@ -57,15 +67,23 @@ public class Painter {
                     BufferedImage test = Buns.get(0);
                     g2d.drawImage(test, x0, y0, null);
                 }
-
             }
             if (deck.equals("Doors")) {
+                // Отрисовывает карты дверей
                 if(!numberOfCard.equals("??")) {
-                int i = Integer.parseInt(numberOfCard);
-                BufferedImage test = Doors.get(i);
-                g2d.drawImage(test, x0, y0, null);
+                    int i = Integer.parseInt(numberOfCard);
+                    BufferedImage test = Doors.get(i);
+                    g2d.drawImage(test, x0, y0, null);
                 }else{
                     BufferedImage test = Doors.get(0);
+                    g2d.drawImage(test, x0, y0, null);
+                }
+            }
+            if (deck.equals("Cube")) {
+                // Отрисовывает грани кубика
+                if(!numberOfCard.equals("??")) {
+                    int i = Integer.parseInt(numberOfCard);
+                    BufferedImage test = Cube.get(i);
                     g2d.drawImage(test, x0, y0, null);
                 }
             }
