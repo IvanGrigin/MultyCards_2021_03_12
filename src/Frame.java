@@ -120,7 +120,6 @@ public class Frame extends JFrame implements MouseListener, MouseMotionListener 
                 t.x = 600 + j * 30;
                 t.y = 100 + i * 100;
                 t.faseUpIsTrue = 1;
-                 System.out.println("hi "+t.numberOfCard+ " "+ t.deck+ " "+ t.gameset+" "+t.x + " "+ t.y );
                 t.drawCard(g2d);
                 dx = j;
             }
@@ -302,12 +301,17 @@ public class Frame extends JFrame implements MouseListener, MouseMotionListener 
             sentStateOfCard(t);
             upTime();
             activeCard = -1;
-            if(t.isInLightGrayZone(getHeight() - darkGrayZone - lightGrayZone, getHeight() - darkGrayZone)){
-                if(t.deck.equals("Doors")){
-                    player.doors.add(t.numberOfCard);
-                }
-                if(t.deck.equals("Buns")){
-                    player.buns.add(t.numberOfCard);
+            player.buns.clear();
+            player.doors.clear();
+            for(int i = 0; i < cards.size(); i = i + 1) {
+                t = cards.get(i);
+                if (t.isInLightGrayZone(getHeight() - darkGrayZone - lightGrayZone, getHeight() - darkGrayZone)) {
+                    if (t.deck.equals("Doors")) {
+                        player.doors.add(t.numberOfCard);
+                    }
+                    if (t.deck.equals("Buns")) {
+                        player.buns.add(t.numberOfCard);
+                    }
                 }
             }
         }
@@ -345,6 +349,9 @@ public class Frame extends JFrame implements MouseListener, MouseMotionListener 
             if ((!t.isInDarkGrayZone(getHeight() - darkGrayZone)) && (!t.isInLightGrayZone(getHeight() - darkGrayZone - lightGrayZone, getHeight() - darkGrayZone))) {
                 postman.sendMessage("All " + numberOfClient + " Card " + activeCard + " " + t.sentState());
                 text = "All " + numberOfClient + " Card " + activeCard + " " + t.sentState();
+            }else{
+                text = "All " + numberOfClient + " Card " + activeCard + " -1000 -1000 " + t.w + " " + t.h + " " + t.gameset + " " + t.deck + " " + t.numberOfCard + " " + t.faseUpIsTrue + " " + t.higth + " " + t.rx + " " + t.ry;
+                postman.sendMessage(text);
             }
             System.out.println(text);
         }

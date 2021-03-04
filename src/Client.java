@@ -44,7 +44,6 @@ public class Client extends MessageListener {
             numberOfClient = Integer.parseInt(number);
             frame.numberOfClient = numberOfClient;
             System.out.println("Your number in this Server: " + numberOfClient);
-            frame.numberOfClient = numberOfClient;
             frame.player.numberOfPlayer = numberOfClient;
         }
 
