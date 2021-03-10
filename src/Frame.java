@@ -68,11 +68,10 @@ public class Frame extends JFrame implements MouseListener, MouseMotionListener 
 
         Graphics2D g2d = (Graphics2D) g;
 
-
         // Отрисовка карт руки
         // Темно-серая зона
-        g.setColor(Color.darkGray);
-        g.fillRect(0, getHeight() - darkGrayZone, getWidth(), darkGrayZone);
+        g2d.setColor(Color.darkGray);
+        g2d.fillRect(0, getHeight() - darkGrayZone, getWidth(), darkGrayZone);
         for (int i = 0; i <= maxHigth; i = i + 1) {
             for (int j = 0; j < cards.size(); j = j + 1) {
                 if ((cards.get(j).higth == i) && (cards.get(j).isInDarkGrayZone(getHeight() - darkGrayZone))) {
@@ -81,8 +80,8 @@ public class Frame extends JFrame implements MouseListener, MouseMotionListener 
             }
         }
 
-        g.setColor(Color.lightGray);
-        g.fillRect(0, getHeight() - darkGrayZone - lightGrayZone, getWidth(), lightGrayZone);
+        g2d.setColor(Color.lightGray);
+        g2d.fillRect(0, getHeight() - darkGrayZone - lightGrayZone, getWidth(), lightGrayZone);
         for (int i = 0; i <= maxHigth; i = i + 1) {
             for (int j = 0; j < cards.size(); j = j + 1) {
                 if ((cards.get(j).higth == i) && (cards.get(j).isInLightGrayZone(getHeight() - darkGrayZone - lightGrayZone, getHeight() - darkGrayZone))) {
@@ -92,8 +91,8 @@ public class Frame extends JFrame implements MouseListener, MouseMotionListener 
         }
 
         Color c = new Color(245, 245, 220);
-        g.setColor(c);
-        g.fillRect(0, 0, getWidth(), getHeight() - darkGrayZone - lightGrayZone);
+        g2d.setColor(c);
+        g2d.fillRect(0, 0, getWidth(), getHeight() - darkGrayZone - lightGrayZone);
 
         //Отрисовка статичных элементов
         deckOfDoors.drawDeck(g2d);
@@ -110,6 +109,7 @@ public class Frame extends JFrame implements MouseListener, MouseMotionListener 
                 }
             }
         }
+
 
         ///////////////////////////////////////////////////////////////////
         // Происходит отрисовка "рук" всех игроком, шмотки плюшки и т.п.
