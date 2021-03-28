@@ -7,6 +7,7 @@ import java.util.StringTokenizer;
 public class Server extends MessageListener {
     ArrayList<StreamWorker> postmans = new ArrayList<>();
     ArrayList<String> textsOfServer = new ArrayList<>();
+    ArrayList<String> textsOfPlayers = new ArrayList<>();
 
 
     public void run() throws IOException {
@@ -20,6 +21,9 @@ public class Server extends MessageListener {
             postman.sendMessage("Your_Number " + (postmans.size()));
             for (int i = 0; i < textsOfServer.size(); i = i + 1) {
                 postman.sendMessage(textsOfServer.get(i));
+            }
+            for (int i = 0; i < textsOfPlayers.size(); i = i + 1) {
+                postman.sendMessage(textsOfPlayers.get(i));
             }
             postman.start();
             postmans.add(postman);
@@ -63,11 +67,19 @@ public class Server extends MessageListener {
             String token5 = tokenizer.nextToken();
             String token6 = tokenizer.nextToken();
             String token7 = tokenizer.nextToken();
-            int w = (int) (Math.random() * 10) + 1;
-            token7 = "" + w;
+            if (token6.equals("Buns")) {
+                int w = (int) (Math.random() * 75) + 1;
+                token7 = "" + w;
+            }
+            if (token6.equals("Doors")) {
+                int w = (int) (Math.random() * 95) + 1;
+                token7 = "" + w;
+            }
             String token8 = tokenizer.nextToken();
+
             //Высота карты
             String token9 = tokenizer.nextToken();
+
             //Положенеие от курсора
             String token10 = tokenizer.nextToken();
             String token11 = tokenizer.nextToken();
@@ -90,9 +102,16 @@ public class Server extends MessageListener {
             textsOfServer.add(s);
 
             postmans.get(numberOfClient).sendMessage(text);
-        }else if (token0.equals("newRole")){
+        } else if (token0.equals("newRole")) {
             int w = (int) (Math.random() * 6);
             text = "State -1 Cube " + w;
+            // Генерируем броосок кубика
+        } else if (token0.equals("Buns")) {
+            while (numberOfClient > textsOfPlayers.size() - 1) {
+                textsOfPlayers.add("");
+            }// Добавляем ткстовое сообщение в профиль игроку на сервере
+            textsOfPlayers.set(numberOfClient, text);
+
         }
 
         if (forWho.equals("All")) {

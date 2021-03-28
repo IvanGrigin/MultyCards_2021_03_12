@@ -7,17 +7,17 @@ import java.io.IOException;
 
 public class Deck {
 
-    BufferedImage deckImage;
+    Image deckImage;
 
     public Deck(String s) throws IOException {
-        this.deckImage = ImageIO.read(new File("C:\\Users\\forStudy\\IdeaProjects\\data\\Munchkin_Cards\\Original\\"+ s +"\\deck.bmp"));
-        w = deckImage.getWidth();
-        h = deckImage.getHeight();
+        this.deckImage = ImageIO.read(new File("C:\\Users\\forStudy\\IdeaProjects\\data\\Munchkin\\Original\\"+ s +"_State\\deck.jpg"));
+        w = 70;
+        h = 120;
     }
     public Deck() throws IOException {
         this.deckImage = ImageIO.read(new File("C:\\Users\\forStudy\\IdeaProjects\\data\\Munchkin_Cards\\Original\\All_another\\Bin.bmp"));
-        w = deckImage.getWidth();
-        h = deckImage.getHeight();
+        w = 70;
+        h = 120;
     }
     int x = 600;
     int y = 200;
@@ -25,7 +25,8 @@ public class Deck {
     int h;
 
     public void drawDeck(Graphics2D g2d){
-        g2d.drawImage(deckImage, x, y, null);
+        Image test = deckImage.getScaledInstance(w, h, Image.SCALE_SMOOTH);
+        g2d.drawImage(test, x, y, null);
     }
 
     public boolean checkClick(MouseEvent e){

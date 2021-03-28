@@ -9,12 +9,19 @@ public class Client extends MessageListener {
     int numberOfClient;
     boolean isItNewCard = false;
 
-    public Client() throws IOException {
+    public Client(PreGame p) throws IOException {
+        frame.preplayer.name = p.creator.name;
+        frame.preplayer.pol = p.creator.pol;
     }
 
 
-    public static void main(String[] args) throws IOException {
-        Client client = new Client();
+    public static void main(String[] args) throws IOException, InterruptedException {
+        PreGame preGame = new PreGame();
+        while (preGame.isReady == false){
+            preGame.repaint();
+            Thread.sleep(20);
+        }
+        Client client = new Client(preGame);
         client.start();
     }
 
@@ -140,6 +147,15 @@ public class Client extends MessageListener {
                         frame.players.get(numberOfPlayer).doors.add(n);
                     }
                 }
+                String level = tokenizer.nextToken();
+                frame.players.get(numberOfPlayer).level = Integer.parseInt(level);
+
+                String chisOfCardsOnHand = tokenizer.nextToken();
+                frame.players.get(numberOfPlayer).chisOfCardsOnHand = Integer.parseInt(chisOfCardsOnHand);
+
+                String pol = tokenizer.nextToken();
+                frame.players.get(numberOfPlayer).pol = pol;
+
             }
             if(token0.equals("Cube")){
                 String numberOfFace = tokenizer.nextToken();

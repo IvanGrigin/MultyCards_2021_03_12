@@ -13,15 +13,16 @@ import java.util.ArrayList;
 public class Frame extends JFrame implements MouseListener, MouseMotionListener {
     long previousWorldUpdateTime; // Храним здесь момент времени когда физика мира обновлялась в последний раз
     long dt; // Сколько прошло времени с предыдущей отправки
-    int minDistance = 30;
+    int minDistance = 10;
     long minTime = 60;
 
+    Painter p = new Painter();
     StreamWorker postman;
     ArrayList<Card> cards = new ArrayList<>();
-    ArrayList<ArrayList<Card>> states = new ArrayList<>();
     ArrayList<Player> players = new ArrayList<>();
 
     Player player;
+    Player preplayer = new Player();
     Cube cubic;
 
     int maxHigth = 0;
@@ -37,9 +38,14 @@ public class Frame extends JFrame implements MouseListener, MouseMotionListener 
     Deck deckOfBuns = new Deck("Buns");
     Deck deckOfBin = new Deck();
 
+    ClickableObject levelUp;
+    ClickableObject levelDown;
+
+    Card stateCard;
+
 
     public Frame() throws IOException {
-        setSize(1970, 900);
+        setSize(1967, 900);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setVisible(true);
         setResizable(false);
@@ -49,9 +55,14 @@ public class Frame extends JFrame implements MouseListener, MouseMotionListener 
         deckOfDoors.setXY(200, 50);
         deckOfBuns.setXY(300, 50);
 
+        levelUp = new ClickableObject(10, 80, 30, 30, "lv +1");
+        levelDown = new ClickableObject(10, 120, 30,30,"lv -1");
+
+
         repaint();
         this.previousWorldUpdateTime = System.currentTimeMillis();
         dt = 1000;
+        stateCard = null;
 
     }
 
@@ -75,7 +86,7 @@ public class Frame extends JFrame implements MouseListener, MouseMotionListener 
         for (int i = 0; i <= maxHigth; i = i + 1) {
             for (int j = 0; j < cards.size(); j = j + 1) {
                 if ((cards.get(j).higth == i) && (cards.get(j).isInDarkGrayZone(getHeight() - darkGrayZone))) {
-                    cards.get(j).drawCard(g2d);
+                    drawCard(g2d, cards.get(j));
                 }
             }
         }
@@ -85,7 +96,7 @@ public class Frame extends JFrame implements MouseListener, MouseMotionListener 
         for (int i = 0; i <= maxHigth; i = i + 1) {
             for (int j = 0; j < cards.size(); j = j + 1) {
                 if ((cards.get(j).higth == i) && (cards.get(j).isInLightGrayZone(getHeight() - darkGrayZone - lightGrayZone, getHeight() - darkGrayZone))) {
-                    cards.get(j).drawCard(g2d);
+                    drawCard(g2d, cards.get(j));
                 }
             }
         }
@@ -98,38 +109,27 @@ public class Frame extends JFrame implements MouseListener, MouseMotionListener 
         deckOfDoors.drawDeck(g2d);
         deckOfBuns.drawDeck(g2d);
         deckOfBin.drawDeck(g2d);
-        if(cubic != null) {
+        levelUp.drawObject(g2d);
+        levelDown.drawObject(g2d);
+        if (cubic != null) {
             cubic.drawCube(g2d);
+        }
+        ///////////////////////////////////////////////////////////////////
+        // Происходит отрисовка "рук" всех игроков, шмотки плюшки и т.п.
+        for (int i = 0; i < players.size(); i = i + 1) {
+            players.get(i).drawPlayer(g2d, 800, 50 + i * 130, p);
         }
         //Отрисовка карт всех остальных
         for (int i = 0; i <= maxHigth; i = i + 1) {
             for (int j = 0; j < cards.size(); j = j + 1) {
                 if ((cards.get(j).higth == i) && (!cards.get(j).isInDarkGrayZone(getHeight() - darkGrayZone)) && (!cards.get(j).isInLightGrayZone(getHeight() - darkGrayZone - lightGrayZone, getHeight() - darkGrayZone))) {
-                    cards.get(j).drawCard(g2d);
+                    drawCard(g2d, cards.get(j));
                 }
             }
         }
 
-
-        ///////////////////////////////////////////////////////////////////
-        // Происходит отрисовка "рук" всех игроком, шмотки плюшки и т.п.
-        for (int i = 0; i < players.size(); i = i + 1){
-            int dx = 0;
-            for (int j = 0; j < players.get(i).buns.size(); j = j + 1){
-                Card t = new Card("Original", "Buns", players.get(i).buns.get(j));
-                t.x = 600 + j * 30;
-                t.y = 100 + i * 100;
-                t.faseUpIsTrue = 1;
-                t.drawCard(g2d);
-                dx = j + 1;
-            }
-            for (int j = 0; j < players.get(i).doors.size(); j = j + 1){
-                Card t = new Card("Original", "Doors", players.get(i).doors.get(j));
-                t.x = 600 + j * 30 + dx * 30;
-                t.y = 100 + i * 100;
-                t.faseUpIsTrue = 1;
-                t.drawCard(g2d);
-            }
+        if (stateCard != null) {
+            drawMaxCard(g2d, stateCard);
         }
 
         g.dispose();
@@ -139,7 +139,6 @@ public class Frame extends JFrame implements MouseListener, MouseMotionListener 
 
     @Override
     public void mouseClicked(MouseEvent e) {
-
         // Здесь идет проверка на попадание клика на карту и соответсвенно она переворачивается
         maxHeigthOfThisCards = -1;
         int active = -1;
@@ -150,25 +149,42 @@ public class Frame extends JFrame implements MouseListener, MouseMotionListener 
                 active = i;
             }
         }
-        if (active != -1) {
-            cards.get(active).faseUpIsTrue = (-1) * cards.get(active).faseUpIsTrue;
-            if ((!cards.get(active).isInDarkGrayZone(getHeight() - darkGrayZone)) && (!cards.get(active).isInLightGrayZone(getHeight() - darkGrayZone - lightGrayZone, getHeight() - darkGrayZone))) {
-                postman.sendMessage("All " + numberOfClient + " Card " + active + " " + cards.get(active).sentState());
-                upTime();
+
+        if (e.getButton() == 1) {
+            if (active != -1) {
+                cards.get(active).faseUpIsTrue = (-1) * cards.get(active).faseUpIsTrue;
+                if ((!cards.get(active).isInDarkGrayZone(getHeight() - darkGrayZone)) && (!cards.get(active).isInLightGrayZone(getHeight() - darkGrayZone - lightGrayZone, getHeight() - darkGrayZone))) {
+                    postman.sendMessage("All " + numberOfClient + " Card " + active + " " + cards.get(active).sentState());
+                    upTime();
+                }
+                new Thread(() -> {
+                    new MakeSound().playSound("C://Users//forStudy//IdeaProjects//data//Munchkin_Sounds//flip.wav");
+                }).start();
+            } else {
+                if (cubic != null) {
+                    cubic.checkClick(e);
+                }
             }
-            new Thread(() -> {
-                new MakeSound().playSound("C://Users//forStudy//IdeaProjects//data//Munchkin_Sounds//flip.wav");
-            }).start();
-        }else{
-            cubic.checkClick(e);
         }
+        if (levelUp != null){
+            if(levelUp.checkClick(e)){
+                player.level = player.level + 1;
+            }
+        }
+        if (levelDown != null){
+            if(levelDown.checkClick(e)){
+                player.level = player.level - 1;
+            }
+        }
+        player.level = Math.max(player.level, 1);
+
+        sentStates();
         repaint();
     }
 
 
     @Override
     public void mousePressed(MouseEvent e) {
-
         // Аналогичная проверка на попадание клика
         maxHeigthOfThisCards = -1;
         for (int i = 0; i < cards.size(); i = i + 1) {
@@ -190,8 +206,6 @@ public class Frame extends JFrame implements MouseListener, MouseMotionListener 
                         Card t = test;
                         sentStateOfCard(t);
                         upTime();
-
-
                     }
                 }
             }
@@ -259,9 +273,25 @@ public class Frame extends JFrame implements MouseListener, MouseMotionListener 
                 }).start();
 
             }
-
         }
+        if (e.getButton() == 3) {
+            if (activeCard != -1) {
+                Card t = cards.get(activeCard);
+                stateCard = new Card("Original", t.deck, t.numberOfCard);
+                stateCard.x = e.getX() - 100;
+                stateCard.y = e.getY() - 350;
+            } else {
+                for (int i = 0; i < players.size(); i = i + 1) {
+                    if (players.get(i).checkPressed(e, 800, 50 + i * 120) != null) {
+                        Card t = players.get(i).checkPressed(e, 800, 20 + i * 130);
+                        stateCard = new Card("Original", t.deck, t.numberOfCard);
+                        stateCard.x = e.getX() - 100;
+                        stateCard.y = e.getY() - 50;
+                    }
 
+                }
+            }
+        }
         repaint();
     }
 
@@ -304,7 +334,9 @@ public class Frame extends JFrame implements MouseListener, MouseMotionListener 
             activeCard = -1;
             player.buns.clear();
             player.doors.clear();
-            for(int i = 0; i < cards.size(); i = i + 1) {
+            player.chisOfCardsOnHand = 0;
+
+            for (int i = 0; i < cards.size(); i = i + 1) {
                 t = cards.get(i);
                 if (t.isInLightGrayZone(getHeight() - darkGrayZone - lightGrayZone, getHeight() - darkGrayZone)) {
                     if (t.deck.equals("Doors")) {
@@ -314,8 +346,13 @@ public class Frame extends JFrame implements MouseListener, MouseMotionListener 
                         player.buns.add(t.numberOfCard);
                     }
                 }
+                if(cards.get(i).isInDarkGrayZone(getHeight() - darkGrayZone)) {
+                    player.chisOfCardsOnHand = player.chisOfCardsOnHand + 1;
+                }
+
             }
         }
+        stateCard = null;
         repaint();
         sentStates();
     }
@@ -337,16 +374,19 @@ public class Frame extends JFrame implements MouseListener, MouseMotionListener 
 
     public void setCube(StreamWorker p) {
         // Добавляет кубик
-        cubic = new Cube(10,40, p, numberOfClient);
+        cubic = new Cube(10, 40, p, numberOfClient);
     }
 
-    public void setPlayer(StreamWorker p){
+    public void setPlayer(StreamWorker p) {
         // Создает истиного, реального игрока сидящего за компом
-         player = new Player(p , numberOfClient);
+        player = new Player(p, numberOfClient);
+        player.pol = preplayer.pol;
+        player.name = preplayer.name;
     }
-    public void newPlayer(StreamWorker p){
+
+    public void newPlayer(StreamWorker p) {
         // Добавляет нового "игрока" чтобы мы с него считывали карты
-        players.add(new Player(p , numberOfClient));
+        players.add(new Player(p, numberOfClient));
     }
 
     public void sentStateOfCard(Card t) {
@@ -355,7 +395,7 @@ public class Frame extends JFrame implements MouseListener, MouseMotionListener 
             if ((!t.isInDarkGrayZone(getHeight() - darkGrayZone)) && (!t.isInLightGrayZone(getHeight() - darkGrayZone - lightGrayZone, getHeight() - darkGrayZone))) {
                 postman.sendMessage("All " + numberOfClient + " Card " + activeCard + " " + t.sentState());
                 text = "All " + numberOfClient + " Card " + activeCard + " " + t.sentState();
-            }else{
+            } else {
                 text = "All " + numberOfClient + " Card " + activeCard + " -1000 -1000 " + t.w + " " + t.h + " " + t.gameset + " " + t.deck + " " + t.numberOfCard + " " + t.faseUpIsTrue + " " + t.higth + " " + t.rx + " " + t.ry;
                 postman.sendMessage(text);
             }
@@ -374,14 +414,27 @@ public class Frame extends JFrame implements MouseListener, MouseMotionListener 
             System.out.println(text);
         }
     }
-    public void sentStates(){
+
+    public void sentStates() {
         // Отсылает карты игрока в светло-серой зоне
-       player.sentStateOfPlayer();
+        player.sentStateOfPlayer();
     }
 
     public void upTime() {
         dt = 0;
         previousWorldUpdateTime = System.currentTimeMillis();
+    }
+
+    public void drawCard(Graphics2D g2d, Card t) {
+        if (t.faseUpIsTrue == -1) {
+            p.drawSmall(g2d, t.x, t.y, t.gameset, t.deck, "00");
+        } else {
+            p.drawSmall(g2d, t.x, t.y, t.gameset, t.deck, t.numberOfCard);
+        }
+    }
+
+    public void drawMaxCard(Graphics2D g2d, Card t) {
+        p.draw(g2d, t.x, t.y, t.gameset, t.deck, t.numberOfCard);
     }
 
 

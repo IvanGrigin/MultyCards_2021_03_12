@@ -6,13 +6,12 @@ import java.io.File;
 import java.io.IOException;
 
 public class Card {
-    Painter p= new Painter();
 
     public Card(){
         x = 20;
         y = 30;
-        h = 93;
-        w = 57;
+        h = 120;
+        w = 70;
     }
 
     public Card(String gameset0, String deck0,String numberOfCard0){
@@ -20,8 +19,8 @@ public class Card {
         prex = 0;
         prey =0;
         y = 30;
-        h = 93;
-        w = 57;
+        h = 120;
+        w = 70;
         this.gameset = gameset0;
         this.deck = deck0;
         this.numberOfCard = numberOfCard0;
@@ -42,14 +41,6 @@ public class Card {
     String deck = "Doors";
     String numberOfCard = "01";
     int faseUpIsTrue = -1;
-
-    public void drawCard(Graphics2D g2d) {
-        if (faseUpIsTrue == -1) {
-            p.draw(g2d, x, y, gameset, deck, "00");
-        }else {
-            p.draw(g2d, x, y, gameset, deck, numberOfCard);
-        }
-    }
 
     public boolean checkClick(MouseEvent e) {
         if ((e.getX() > this.x) && (e.getX() < this.x + this.w) && (e.getY() > this.y) && (e.getY() < this.y + this.h)) {

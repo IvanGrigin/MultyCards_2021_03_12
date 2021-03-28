@@ -8,38 +8,35 @@ import java.util.ArrayList;
 public class Painter {
 
     String gameset = "Original";
-    ArrayList<BufferedImage> Buns = new ArrayList<>();
-    ArrayList<BufferedImage> Doors = new ArrayList<>();
+    ArrayList<Image> Buns = new ArrayList<>();
+    ArrayList<Image> Doors = new ArrayList<>();
     ArrayList<BufferedImage> Cube = new ArrayList<>();
 
     Painter() {
+        String filePathBuns = "C:\\Users\\forStudy\\IdeaProjects\\data\\Munchkin\\" + gameset + "\\" + "Buns_State";
+        String filePathDoors = "C:\\Users\\forStudy\\IdeaProjects\\data\\Munchkin\\" + gameset + "\\" + "Doors_State";
+
         try {
-            Buns.add(ImageIO.read(new File("C:\\Users\\forStudy\\IdeaProjects\\data\\Munchkin_Cards\\" + gameset + "\\" + "Buns" + "\\" + "00.bmp")));
-            Buns.add(ImageIO.read(new File("C:\\Users\\forStudy\\IdeaProjects\\data\\Munchkin_Cards\\" + gameset + "\\" + "Buns" + "\\" + "01.bmp")));
-            Buns.add(ImageIO.read(new File("C:\\Users\\forStudy\\IdeaProjects\\data\\Munchkin_Cards\\" + gameset + "\\" + "Buns" + "\\" + "02.bmp")));
-            Buns.add(ImageIO.read(new File("C:\\Users\\forStudy\\IdeaProjects\\data\\Munchkin_Cards\\" + gameset + "\\" + "Buns" + "\\" + "03.bmp")));
-            Buns.add(ImageIO.read(new File("C:\\Users\\forStudy\\IdeaProjects\\data\\Munchkin_Cards\\" + gameset + "\\" + "Buns" + "\\" + "04.bmp")));
-            Buns.add(ImageIO.read(new File("C:\\Users\\forStudy\\IdeaProjects\\data\\Munchkin_Cards\\" + gameset + "\\" + "Buns" + "\\" + "05.bmp")));
-            Buns.add(ImageIO.read(new File("C:\\Users\\forStudy\\IdeaProjects\\data\\Munchkin_Cards\\" + gameset + "\\" + "Buns" + "\\" + "06.bmp")));
-            Buns.add(ImageIO.read(new File("C:\\Users\\forStudy\\IdeaProjects\\data\\Munchkin_Cards\\" + gameset + "\\" + "Buns" + "\\" + "07.bmp")));
-            Buns.add(ImageIO.read(new File("C:\\Users\\forStudy\\IdeaProjects\\data\\Munchkin_Cards\\" + gameset + "\\" + "Buns" + "\\" + "08.bmp")));
-            Buns.add(ImageIO.read(new File("C:\\Users\\forStudy\\IdeaProjects\\data\\Munchkin_Cards\\" + gameset + "\\" + "Buns" + "\\" + "09.bmp")));
-            Buns.add(ImageIO.read(new File("C:\\Users\\forStudy\\IdeaProjects\\data\\Munchkin_Cards\\" + gameset + "\\" + "Buns" + "\\" + "10.bmp")));
+            for(int i = 0; i < 10; i = i + 1){
+                String s = "00" + i;
+                Buns.add(ImageIO.read(new File(filePathBuns + "\\" + s +".jpg")));
+            }
+            for(int i = 10; i < 76; i = i + 1){
+                String s = "0" + i;
+                Buns.add(ImageIO.read(new File(filePathBuns + "\\" + s +".jpg")));
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
         try {
-            Doors.add(ImageIO.read(new File("C:\\Users\\forStudy\\IdeaProjects\\data\\Munchkin_Cards\\" + gameset + "\\" + "Doors" + "\\" + "00.bmp")));
-            Doors.add(ImageIO.read(new File("C:\\Users\\forStudy\\IdeaProjects\\data\\Munchkin_Cards\\" + gameset + "\\" + "Doors" + "\\" + "01.bmp")));
-            Doors.add(ImageIO.read(new File("C:\\Users\\forStudy\\IdeaProjects\\data\\Munchkin_Cards\\" + gameset + "\\" + "Doors" + "\\" + "02.bmp")));
-            Doors.add(ImageIO.read(new File("C:\\Users\\forStudy\\IdeaProjects\\data\\Munchkin_Cards\\" + gameset + "\\" + "Doors" + "\\" + "03.bmp")));
-            Doors.add(ImageIO.read(new File("C:\\Users\\forStudy\\IdeaProjects\\data\\Munchkin_Cards\\" + gameset + "\\" + "Doors" + "\\" + "04.bmp")));
-            Doors.add(ImageIO.read(new File("C:\\Users\\forStudy\\IdeaProjects\\data\\Munchkin_Cards\\" + gameset + "\\" + "Doors" + "\\" + "05.bmp")));
-            Doors.add(ImageIO.read(new File("C:\\Users\\forStudy\\IdeaProjects\\data\\Munchkin_Cards\\" + gameset + "\\" + "Doors" + "\\" + "06.bmp")));
-            Doors.add(ImageIO.read(new File("C:\\Users\\forStudy\\IdeaProjects\\data\\Munchkin_Cards\\" + gameset + "\\" + "Doors" + "\\" + "07.bmp")));
-            Doors.add(ImageIO.read(new File("C:\\Users\\forStudy\\IdeaProjects\\data\\Munchkin_Cards\\" + gameset + "\\" + "Doors" + "\\" + "08.bmp")));
-            Doors.add(ImageIO.read(new File("C:\\Users\\forStudy\\IdeaProjects\\data\\Munchkin_Cards\\" + gameset + "\\" + "Doors" + "\\" + "09.bmp")));
-            Doors.add(ImageIO.read(new File("C:\\Users\\forStudy\\IdeaProjects\\data\\Munchkin_Cards\\" + gameset + "\\" + "Doors" + "\\" + "10.bmp")));
+            for(int i = 0; i < 10; i = i + 1){
+                String s = "00" + i;
+                Doors.add(ImageIO.read(new File(filePathDoors + "\\" + s +".jpg")));
+            }
+            for(int i = 10; i < 96; i = i + 1){
+                String s = "0" + i;
+                Doors.add(ImageIO.read(new File(filePathDoors + "\\" + s +".jpg")));
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -61,10 +58,10 @@ public class Painter {
                 // Отрисовывает карты сокровищ
                 if(!numberOfCard.equals("??")) {
                     int i = Integer.parseInt(numberOfCard);
-                    BufferedImage test = Buns.get(i);
+                    Image test = Buns.get(i);
                     g2d.drawImage(test, x0, y0, null);
                 }else{
-                    BufferedImage test = Buns.get(0);
+                    Image test = Buns.get(0);
                     g2d.drawImage(test, x0, y0, null);
                 }
             }
@@ -72,10 +69,10 @@ public class Painter {
                 // Отрисовывает карты дверей
                 if(!numberOfCard.equals("??")) {
                     int i = Integer.parseInt(numberOfCard);
-                    BufferedImage test = Doors.get(i);
+                    Image test = Doors.get(i);
                     g2d.drawImage(test, x0, y0, null);
                 }else{
-                    BufferedImage test = Doors.get(0);
+                    Image test = Doors.get(0);
                     g2d.drawImage(test, x0, y0, null);
                 }
             }
@@ -84,6 +81,35 @@ public class Painter {
                 if(!numberOfCard.equals("??")) {
                     int i = Integer.parseInt(numberOfCard);
                     BufferedImage test = Cube.get(i);
+                    g2d.drawImage(test, x0, y0, null);
+                }
+            }
+        }
+
+    }
+    public void drawSmall(Graphics2D g2d, int x0, int y0, String gameset0, String deck, String numberOfCard) {
+        int w0 = 70;
+        int h0 = 120;
+        if (gameset0.equals("Original")) {
+            if (deck.equals("Buns")) {
+                // Отрисовывает маленькие карты сокровищ
+                if(!numberOfCard.equals("??")) {
+                    int i = Integer.parseInt(numberOfCard);
+                    Image test = Buns.get(i).getScaledInstance(w0, h0, Image.SCALE_SMOOTH);
+                    g2d.drawImage(test, x0, y0, null);
+                }else{
+                    Image test = Buns.get(0).getScaledInstance(w0, h0, Image.SCALE_SMOOTH);
+                    g2d.drawImage(test, x0, y0, null);
+                }
+            }
+            if (deck.equals("Doors")) {
+                // Отрисовывает маленькие карты дверей
+                if(!numberOfCard.equals("??")) {
+                    int i = Integer.parseInt(numberOfCard);
+                    Image test = Doors.get(i).getScaledInstance(w0, h0, Image.SCALE_SMOOTH);
+                    g2d.drawImage(test, x0, y0, null);
+                }else{
+                    Image test = Doors.get(0).getScaledInstance(w0, h0, Image.SCALE_SMOOTH);
                     g2d.drawImage(test, x0, y0, null);
                 }
             }
